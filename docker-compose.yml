@@ -4,9 +4,15 @@ services:
     build: ./services/projects
     ports:
       - "3000:3000"
+      - "4000:4000"
+    volumes:
+      - ./services/projects:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/dist
     environment:
       - PORT=3000
       - DATABASE_URL=postgresql://testuser:testpass@database:5432/testdb
+    command: npm run dev:docker
     depends_on:
       database:
         condition: service_healthy

@@ -11,7 +11,8 @@
     "prisma:migrate": "prisma migrate deploy",
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
-    "db:init": "npm run prisma:generate && npm run prisma:migrate:deploy"
+    "db:init": "npm run prisma:generate && npm run prisma:migrate:deploy",
+    "dev:docker": "ts-node-dev --respawn --transpile-only --poll src/index.ts"
   },
   "dependencies": {
     "@apollo/client": "^3.11.8",

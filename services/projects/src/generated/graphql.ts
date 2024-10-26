@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -14,31 +14,34 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  DateTime: { input: any; output: any; }
 };
 
 export type CreateProjectInput = {
   title: Scalars['String']['input'];
 };
 
-export type CreateProjectResponse = {
-  __typename?: 'CreateProjectResponse';
-  project: Project;
+export type Mutation = {
+  __typename?: 'Mutation';
+  createProject: Project;
+};
+
+
+export type MutationCreateProjectArgs = {
+  input: CreateProjectInput;
 };
 
 export type Project = {
   __typename?: 'Project';
+  createdAt: Scalars['DateTime']['output'];
   id: Scalars['ID']['output'];
   title: Scalars['String']['output'];
-};
-
-export type ProjectsResponse = {
-  __typename?: 'ProjectsResponse';
-  projects: Array<Project>;
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  getProjectById: Project;
+  getProjectById?: Maybe<Project>;
 };
 
 
@@ -119,10 +122,10 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CreateProjectInput: CreateProjectInput;
-  CreateProjectResponse: ResolverTypeWrapper<CreateProjectResponse>;
+  DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  Mutation: ResolverTypeWrapper<{}>;
   Project: ResolverTypeWrapper<Project>;
-  ProjectsResponse: ResolverTypeWrapper<ProjectsResponse>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
 };
@@ -131,38 +134,38 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   CreateProjectInput: CreateProjectInput;
-  CreateProjectResponse: CreateProjectResponse;
+  DateTime: Scalars['DateTime']['output'];
   ID: Scalars['ID']['output'];
+  Mutation: {};
   Project: Project;
-  ProjectsResponse: ProjectsResponse;
   Query: {};
   String: Scalars['String']['output'];
 };
 
-export type CreateProjectResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateProjectResponse'] = ResolversParentTypes['CreateProjectResponse']> = {
-  project?: Resolver<ResolversTypes['Project'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
+  name: 'DateTime';
+}
+
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createProject?: Resolver<ResolversTypes['Project'], ParentType, ContextType, RequireFields<MutationCreateProjectArgs, 'input'>>;
 };
 
 export type ProjectResolvers<ContextType = any, ParentType extends ResolversParentTypes['Project'] = ResolversParentTypes['Project']> = {
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ProjectsResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProjectsResponse'] = ResolversParentTypes['ProjectsResponse']> = {
-  projects?: Resolver<Array<ResolversTypes['Project']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  getProjectById?: Resolver<ResolversTypes['Project'], ParentType, ContextType, RequireFields<QueryGetProjectByIdArgs, 'id'>>;
+  getProjectById?: Resolver<Maybe<ResolversTypes['Project']>, ParentType, ContextType, RequireFields<QueryGetProjectByIdArgs, 'id'>>;
 };
 
 export type Resolvers<ContextType = any> = {
-  CreateProjectResponse?: CreateProjectResponseResolvers<ContextType>;
+  DateTime?: GraphQLScalarType;
+  Mutation?: MutationResolvers<ContextType>;
   Project?: ProjectResolvers<ContextType>;
-  ProjectsResponse?: ProjectsResponseResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
 };
 
