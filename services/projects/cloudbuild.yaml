@@ -1,0 +1,40 @@
+# TODO, set this up properly.
+# 
+# Create a Cloud SQL PostgreSQL instance
+# Update the DATABASE_URL in Cloud Run to point to your Cloud SQL instance
+# 3. Set up VPC connector if needed for private networking
+# To deploy:
+# # One-time setup
+# gcloud init
+# gcloud auth configure-docker
+
+# # Deploy
+# gcloud builds submit
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/projects-service', './services/projects']
+  
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/projects-service']
+  
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+    - 'run'
+    - 'deploy'
+    - 'projects-service'
+    - '--image'
+    - 'gcr.io/$PROJECT_ID/projects-service'
+    - '--region'
+    - 'us-central1'
+    - '--platform'
+    - 'managed'
+    - '--allow-unauthenticated'
+    - '--set-env-vars'
+    - 'DATABASE_URL=${_DATABASE_URL}'
+
+images:
+  - 'gcr.io/$PROJECT_ID/projects-service'

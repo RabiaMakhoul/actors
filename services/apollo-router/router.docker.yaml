@@ -1,0 +1,19 @@
+supergraph:
+  listen: 0.0.0.0:4000
+  introspection: true
+
+cors:
+  origins:
+    - http://localhost:3000
+
+headers:
+  all:
+    request:
+      - propagate:
+          named: "*"
+
+sandbox:
+  enabled: true
+
+homepage:
+  enabled: false

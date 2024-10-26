@@ -1,0 +1,24 @@
+type Project {
+  id: ID!
+  title: String!
+}
+
+type ProjectsResponse {
+  projects: [Project!]!
+}
+
+input CreateProjectInput {
+  title: String!
+}
+
+type CreateProjectResponse {
+  project: Project!
+}
+
+type Query {
+  getProjectById(id: ID!): Project!
+}
+
+# type Mutation {
+#   createProject(input: CreateProjectInput!): CreateProjectResponse!
+# }

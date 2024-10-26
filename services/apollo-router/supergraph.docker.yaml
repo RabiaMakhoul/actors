@@ -1,0 +1,10 @@
+federation_version: =2.3.2
+subgraphs:
+  projects:
+    routing_url: http://projects:4000/graphql
+    schema:
+      file: ./api/projects.graphql
+  actors:
+    routing_url: http://actors:4000/graphql
+    schema:
+      file: ./api/actors.graphql

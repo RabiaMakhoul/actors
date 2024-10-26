@@ -1,0 +1,6 @@
+federation_version: =2.3.2
+subgraphs:
+  projects:
+    routing_url: http://projects-service.internal/graphql
+    schema:
+      file: ../projects/api/projects.graphql
