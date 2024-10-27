@@ -1,112 +1,58 @@
 import { 
   SandpackProvider, 
   SandpackPreview,
-  useSandpack,
+  SandpackCodeEditor,
+  SandpackLayout,
+  SandpackFileExplorer,
 } from "@codesandbox/sandpack-react";
 import styles from "./SandpackWrapper.module.css";
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
+import { ProjectContext } from "../contexts/ProjectContext";
 
-// Add more detailed logging and error handling
-function SandpackErrorListener() {
-  const { listen } = useSandpack();
+export default function SandpackWrapper() {
+  const projectContext = useContext(ProjectContext);
+  const project = projectContext?.project;
 
-  useEffect(() => {
-    const stopListening = listen((msg) => {
-      // Log all messages for debugging
-      console.log("Sandpack Message:", msg);
+  if (!project) {
+    return <div>No project loaded</div>;
+  }
 
-      switch (msg.type) {
-        case "compile":
-          if ("compilatonError" in msg && msg.compilatonError) {
-            console.error("Compilation Error:", msg);
-          }
-          break;
-        case "state":
-          console.log("Sandpack State:", JSON.stringify(msg.state, null, 2));
-          break;
-        case "start":
-          console.log("Sandpack Start:", msg);
-          break;
-        default:
-          console.log("Unhandled Sandpack Message Type:", msg.type);
-      }
-    });
-
-    return () => {
-      stopListening();
-    };
-  }, [listen]);
-
-  return null;
-}
-
-interface SandpackWrapperProps {
-  files: Record<string, string>;
-}
-
-export default function SandpackWrapper({ files }: SandpackWrapperProps) {
-  const [key, setKey] = useState(0);
-
-  useEffect(() => {
-    console.log("SandpackWrapper: Files received:", files);
-    setKey(prev => prev + 1);
-  }, [files]);
-
-  // Ensure all required files exist
-  const combinedFiles = {
-    "/App.js": files["/App.js"] || `
-import React from 'react';
-
-export default function App() {
-  return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold">Preview</h1>
-      <div className="mt-4">
-        Your preview will appear here
-      </div>
-    </div>
-  );
-}`,
-    "/index.html": `
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Preview</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
-</html>`,
-    "/index.js": `
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App';
-
-const root = createRoot(document.getElementById('root'));
-root.render(<App />);`
+  const files = {
+    "/App.js": project.files["/App.js"] || '',
+    "/index.js": project.files["/index.js"] || '',
+    "/index.html": project.files["/index.html"] || '',
   };
 
   return (
-    <div className={styles.sandpackWrapper}>
-      <SandpackProvider 
-        key={key}
+    <div className={`${styles.sandpackWrapper} h-full`}>
+      <SandpackProvider
         template="react"
         theme="dark"
-        files={combinedFiles}
+        files={files}
+        customSetup={{
+          dependencies: {
+            "react": "^18.0.0",
+            "react-dom": "^18.0.0"
+          },
+          entry: "/index.js"
+        }}
         options={{
           externalResources: ["https://cdn.tailwindcss.com"],
           recompileMode: "immediate",
           recompileDelay: 300
-          // Removed bundlerURL to use default
         }}
       >
-        <SandpackErrorListener />
-        <SandpackPreview 
-          className={styles.preview}
-          showNavigator={false}
-          showRefreshButton={true}
-        />
+        <SandpackLayout className="h-full">
+          <SandpackFileExplorer />
+          <SandpackCodeEditor 
+            showTabs
+            showLineNumbers={true}
+          />
+          <SandpackPreview 
+            showNavigator={true}
+            showRefreshButton={true}
+          />
+        </SandpackLayout>
       </SandpackProvider>
     </div>
   );

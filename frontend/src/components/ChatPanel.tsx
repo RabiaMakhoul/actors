@@ -1,6 +1,8 @@
 'use client';
-import React, { useState, useRef, useEffect, ChangeEvent, FormEvent } from "react";
+import React, { useState, useRef, useEffect, ChangeEvent, FormEvent, useContext } from "react";
 import { ChatMessage } from "../types";
+// Update the import path for ProjectContext
+import { ProjectContext } from "../contexts/ProjectContext";  // Changed from "../app/page"
 
 const BOT_AVATAR = `data:image/svg+xml,${encodeURIComponent(`
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -16,11 +18,10 @@ const USER_AVATAR = `data:image/svg+xml,${encodeURIComponent(`
 </svg>
 `)}`;
 
-interface ChatPanelProps {
-  onUpdatePreview: (files: Record<string, string>) => void;
-}
+export function ChatPanel() {
+  const projectContext = useContext(ProjectContext);
+  const { project, setProject } = projectContext || {};
 
-export function ChatPanel({ onUpdatePreview }: ChatPanelProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 1,
@@ -65,11 +66,16 @@ export function ChatPanel({ onUpdatePreview }: ChatPanelProps) {
     setIsLoading(true);
 
     try {
+      // Simulate an API call
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      // Update with the correct file path (with leading slash)
-      onUpdatePreview({
-        "/App.js": `import React from 'react';
+      // Update the project files using context
+      if (project && setProject) {
+        setProject({
+          ...project,
+          files: {
+            ...project.files,
+            "/App.js": `import React from 'react';
 
 export default function App() {
   return (
@@ -79,7 +85,9 @@ export default function App() {
     </div>
   );
 }`
-      });
+          }
+        });
+      }
 
       const mockBotResponse: ChatMessage = {
         id: Date.now(),
