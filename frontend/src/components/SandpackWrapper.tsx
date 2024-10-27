@@ -27,6 +27,8 @@ function SandpackErrorListener() {
         case "start":
           console.log("Sandpack Start:", msg);
           break;
+        default:
+          console.log("Unhandled Sandpack Message Type:", msg.type);
       }
     });
 
@@ -46,8 +48,8 @@ export default function SandpackWrapper({ files }: SandpackWrapperProps) {
   const [key, setKey] = useState(0);
 
   useEffect(() => {
+    console.log("SandpackWrapper: Files received:", files);
     setKey(prev => prev + 1);
-    console.log("Received files:", files);
   }, [files]);
 
   // Ensure all required files exist

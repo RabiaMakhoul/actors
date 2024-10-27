@@ -1,13 +1,13 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { ChatPanel } from "../components/ChatPanel";
 import { PreviewProject, NavigationState } from "../../src/types/index";
 import SandpackWrapper from "../components/SandpackWrapper";
 
 export default function HomePage() {
-  const [currentProject, setCurrentProject] = useState<PreviewProject | null>(null); // Initialized as null
-
+  const [currentProject, setCurrentProject] = useState<PreviewProject | null>(null);
+  
   const [navigation, setNavigation] = useState<NavigationState>({
     currentUrl: '',
     history: [],
@@ -16,7 +16,9 @@ export default function HomePage() {
   });
 
   const createNewProject = () => {
+    console.log("Create New Project Clicked");
     const newProjectId = uuidv4();
+    console.log("Generated Project ID:", newProjectId);
     const newProject: PreviewProject = {
       id: newProjectId,
       files: {
@@ -52,7 +54,12 @@ root.render(<App />);`
       }
     };
     
-    // Reset navigation state when creating a new project
+    console.log("Setting Navigation State to:", {
+      currentUrl: '',
+      history: [],
+      historyIndex: 0,
+      projectId: newProjectId
+    });
     setNavigation({
       currentUrl: '',
       history: [],
@@ -60,16 +67,19 @@ root.render(<App />);`
       projectId: newProjectId
     });
     
-    // Set the new project
+    console.log("Setting Current Project to:", newProject);
     setCurrentProject(newProject);
   };
 
   const updateProjectFiles = (files: Record<string, string>) => {
-    if (currentProject) { // Ensure there is an active project
+    if (currentProject) {
+      console.log("Updating Project Files:", files);
       setCurrentProject(prev => ({
         ...prev!,
         files: { ...prev!.files, ...files }
       }));
+    } else {
+      console.warn("No active project to update.");
     }
   };
 
