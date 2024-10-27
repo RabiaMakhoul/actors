@@ -1,7 +1,9 @@
 version: '3.8'
 services:
   projects:
-    build: ./services/projects
+    build:
+      context: ./services/projects
+      target: development
     ports:
       - "3000:3000"
       - "4000:4000"
@@ -12,12 +14,18 @@ services:
     environment:
       - PORT=3000
       - DATABASE_URL=postgresql://testuser:testpass@database:5432/testdb
-    command: npm run dev:docker
+      - DB_USER=testuser
+      - DB_PASSWORD=testpass
+      - DB_NAME=testdb
+      - DB_HOST=database
+      - DB_PORT=5432
+    command: sh -c "chmod +x ./wait-for-db.sh && ./wait-for-db.sh database npm run dev:docker"
     depends_on:
       database:
         condition: service_healthy
     networks:
       - app-network
+    restart: unless-stopped
 
   database:
     image: postgres:17
@@ -30,16 +38,42 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "testuser", "-d", "testdb"]
+      test: ["CMD-SHELL", "pg_isready -U testuser -d testdb -h localhost"]
       interval: 5s
       timeout: 5s
       retries: 5
+      start_period: 10s
     networks:
       - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:3000"
+    volumes:
+      - ./frontend:/usr/src/app:delegated
+      - /usr/src/app/.next
+      - /usr/src/app/node_modules
+    environment:
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+      - NEXT_WEBPACK_USEPOLLING=1
+      - NEXT_PUBLIC_API_URL=http://localhost:3000
+      - NODE_ENV=development
+    command: sh -c "npm install --legacy-peer-deps && npm run dev"
+    networks:
+      - app-network
+    stdin_open: true
+    tty: true
+
 
 volumes:
   db-data:
 
 networks:
   app-network:
+    driver: bridge
+  preview-network:
     driver: bridge

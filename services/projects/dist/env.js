@@ -22,7 +22,7 @@ function getRequiredEnvironmentVariable(name) {
     return value;
 }
 function setupEnvironment() {
-    const postgresUrl = process.env.DATABASE_URL || 'postgresql://testuser:testpassword@localhost:5432/testdb';
+    const postgresUrl = process.env.DATABASE_URL || 'postgresql://testuser:testpass@database:5432/testdb';
     return {
         postgresUrl,
         graphqlPort: parseInt(process.env.GRAPHQL_PORT || '4000', 10),

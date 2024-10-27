@@ -6,11 +6,15 @@ import { PrismaProjectRepository } from "./ProjectRepository";
 export async function setupAdapters(
     environment: Environment
 ): Promise<Ports> {
-    console.log('Connecting to database with URL:', process.env.DATABASE_URL);
+    console.log('Connecting to database with URL:', environment.postgresUrl);
     
     const prisma = new PrismaClient({
         log: ['query', 'info', 'warn', 'error'],
-        datasourceUrl: environment.postgresUrl,
+        datasources: {
+            db: {
+                url: environment.postgresUrl
+            }
+        }
     });
 
     try {

@@ -13,7 +13,6 @@ import { Logger } from "../lib/Logger";
 import { Environment } from "../env";
 import { buildResolvers } from "./resolvers";
 
-// Export resolvers as a function to receive the application instance
 export const resolvers = (app: Application) => buildResolvers(app);
 
 export async function runHandlers(

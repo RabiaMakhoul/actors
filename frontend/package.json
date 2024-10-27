@@ -1,0 +1,36 @@
+{
+  "name": "actors",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "start:data-management": "ts-node services/data-management/src/index.ts",
+    "start:projects": "ts-node services/reservation/src/index.ts"
+  },
+  "dependencies": {
+    "@codesandbox/sandpack-react": "^2.19.9",
+    "@graphql-codegen/cli": "^5.0.3",
+    "@prisma/client": "^5.18.0",
+    "dockerode": "^4.0.2",
+    "next": "15.0.1",
+    "react": "^18",
+    "react-dom": "^18",
+    "uuid": "^10.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/dockerode": "^3.3.31",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/uuid": "^10.0.0",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24",
+    "prisma": "^5.18.0",
+    "tailwindcss": "^3.3.2",
+    "typescript": "^5"
+  }
+}

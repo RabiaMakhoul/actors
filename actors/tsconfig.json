@@ -25,22 +25,6 @@
       "@/*": [
         "./src/*"
       ],
-      "@services/*": [
-        "src/services/*"
-      ],
-      // Add the following lines to correctly map the reservation service paths
-      "@services/reservation/*": [
-        "src/services/reservation/src/*"
-      ],
-      "@commands/*": [
-        "src/services/reservation/src/commands/*"
-      ],
-      "@infrastructure/*": [
-        "src/services/reservation/src/infrastructure/*"
-      ],
-      "@domain/*": [
-        "src/services/reservation/src/domain/*"
-      ]
     },
     "baseUrl": "./",
     "target": "ES2017"
@@ -53,10 +37,5 @@
   ],
   "exclude": [
     "node_modules"
-  ],
-  "references": [
-    {
-      "path": "./src/services/reservation"
-    }
   ]
 }
