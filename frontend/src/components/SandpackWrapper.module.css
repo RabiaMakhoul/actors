@@ -6,8 +6,36 @@
   overflow: hidden;
 }
 
+.sandpackLayout {
+  flex: 1;
+  height: 100% !important;
+}
+
+.sandpackPreview {
+  height: 100% !important;
+}
+
+.sandpackPreview > div {
+  height: 100%;
+}
+
+.sandpackPreview iframe {
+  height: 100% !important;
+}
+
 .sandpackWrapper > div {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.sandpackWrapper :global(.sp-layout) {
+  flex-grow: 1;
+  height: auto !important;
+}
+
+.sandpackWrapper :global(.sp-preview-container) {
+  height: 100% !important;
 }
 
 .preview {
