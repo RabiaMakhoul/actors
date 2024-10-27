@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.19.9",
+    "@codesandbox/sandpack-themes": "^2.0.21",
     "@graphql-codegen/cli": "^5.0.3",
     "@prisma/client": "^5.18.0",
     "dockerode": "^4.0.2",

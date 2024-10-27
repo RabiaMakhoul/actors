@@ -34,7 +34,15 @@ export function ChatPanel({ onUpdatePreview }: ChatPanelProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    setTimeout(() => {
+      if (messagesEndRef.current) {
+        const chatContainer = messagesEndRef.current.parentElement;
+        chatContainer?.scrollTo({
+          top: chatContainer.scrollHeight,
+          behavior: "smooth"
+        });
+      }
+    }, 100);
   };
 
   useEffect(() => {
@@ -43,26 +51,27 @@ export function ChatPanel({ onUpdatePreview }: ChatPanelProps) {
 
   const sendMessage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!inputMessage.trim()) return;
+    if (!inputMessage.trim() || isLoading) return;
 
     const newUserMessage: ChatMessage = {
-      id: messages.length + 1,
+      id: Date.now(),
       type: 'user',
       content: inputMessage,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
-    setMessages((prev: ChatMessage[]) => [...prev, newUserMessage]);
+    setMessages(prev => [...prev, newUserMessage]);
     setInputMessage('');
     setIsLoading(true);
 
-    // Simulate bot response and file update
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-    // Example: Update preview based on user input
-    onUpdatePreview({
-      "/src/app/page.tsx": `
-export default function Page() {
+      // Update with the correct file path (with leading slash)
+      onUpdatePreview({
+        "/App.js": `import React from 'react';
+
+export default function App() {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold">Updated based on: ${inputMessage}</h1>
@@ -70,17 +79,21 @@ export default function Page() {
     </div>
   );
 }`
-    });
+      });
 
-    const mockBotResponse: ChatMessage = {
-      id: messages.length + 2,
-      type: 'bot',
-      content: 'I\'ve updated the page with your changes. Check the preview!',
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
+      const mockBotResponse: ChatMessage = {
+        id: Date.now(),
+        type: 'bot',
+        content: 'I\'ve updated the page with your changes. Check the preview!',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
 
-    setMessages((prev: ChatMessage[]) => [...prev, mockBotResponse]);
-    setIsLoading(false);
+      setMessages(prev => [...prev, mockBotResponse]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -88,7 +101,7 @@ export default function Page() {
   };
 
   return (
-    <div className="w-96 border-r border-gray-700 bg-gray-800 flex flex-col">
+    <div className="w-96 border-r border-gray-700 bg-gray-800 flex flex-col h-full">
       <div className="p-4 border-b border-gray-700">
         <h2 className="text-lg font-semibold text-white">Website Builder Assistant</h2>
       </div>
